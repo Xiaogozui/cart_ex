@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>shoppingC</title>
+
+</head>
+<body>
+    <div id="app">
+        <div class="title">
+            <h1>購物車</h1>
+        </div>
+        
+            <div class="cart">
+                <div class="grid">
+                    <div v-for="(prod, index) in products" :key="prod.id">
+                        <div v-if="prod.inCart" class="card">
+                            <div class="pic"><img :src="prod.pic" alt=""></div>
+                            <div class="merName">{{prod.title}}</div>
+                            <div class="count">
+                                <div>${{prod.price}}/per</div>
+                                
+                                <button @click="decreaseQty(index)">-</button>
+                                <input type="text" v-model="prod.count" class="countBox" readonly="readonly"
+                                    @input="minValue(index)" >
+                                <button @click="increaseQty(index)">+</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="overAll">
+                <!-- <table><th>商品編號</th><th>商品照</th><th>商品名稱</th><th>商品數</th><th>小記</th><th>移除</th></table> -->
+                <div class="listOfp" v-for="(prod, index) in products" :key="prod.id">
+                    <div class="card">
+                        <div class="index">{{index + 1}}</div>
+                        <div class="pic">
+                            <img :src="prod.pic" alt="">
+                        </div>
+                        <div class="title">
+                            {{prod.title}}
+                        </div>
+                        <div>${{prod.price}}/per</div>
+                        <div></div>
+                        <div>小記:${{ prod.count * prod.price }}</div>
+                        <button class="remove" @click="removeFromCart(index)">REMOVE</button>
+                    </div>
+                </div>
+                <div class="seperate_line"></div>
+                <div class="calc">{{ cartItemCount }} 項商品</div>
+                <div class="calc">總價:${{ cartTotalPrice }}</div>
+            </div>
+    </div>
+    <script src="https://unpkg.com/vue@next"></script>
+    <script>
+        Vue.createApp({
+            data() {
+                return {
+                    products: [{
+                        pic: './images/lee.png',
+                        title: '花鳥蘇繡旗袍',
+                        price: 900,
+                        count: 1,
+                        inCart: true
+                    },
+                    {
+                        pic: './images/chang.png',
+                        title: '廣繡銀股旗袍',
+                        price: 930,
+                        count: 1,
+                        inCart: true
+                    },
+                    {
+                        pic: './images/chen.png',
+                        title: '復古西裝-女',
+                        price: 700,
+                        count: 1,
+                        inCart: true
+                    },
+                    {
+                        pic: './images/lin.png',
+                        title: '1950國民黨將軍配服',
+                        price: 2590,
+                        count: 1,
+                        inCart: true
+                    },
+                    {
+                        pic: './images/shen.png',
+                        title: '復古三件套西裝-褐',
+                        price: 1590,
+                        count: 1,
+                        inCart: true
+                    },
+                    {
+                        pic: './images/ye.png',
+                        title: '1950國民黨少校配服',
+                        price: 2590,
+                        count: 1,
+                        inCart: true
+                    }
+                    ],
+                    qty: 0,
+                    patterns: ['./images/cheongsam.png','./images/garment.png','./images/garters.png']
+
+                }
+            },
+            computed: {
+                cartItemCount() {
+                    return this.products.filter(prod => prod.inCart).length;
+                },
+                cartTotalPrice() {
+                    return this.products.reduce((total, prod) => {
+                        if (prod.inCart) {
+                            return total + prod.count * prod.price;
+                        }
+                        return total;
+                    }, 0);
+                }
+            },
+            methods: {
+                minValue() {
+                    if (this.value < 0) {
+                        this.value = 0;
+                    }
+                },
+                decreaseQty(index) {
+                    if (this.products[index].count > 0) {
+                        this.products[index].count--;
+                    }
+                },
+                increaseQty(index) {
+                    this.products[index].count++;
+                },
+                removeFromCart(index) {
+                    this.products.splice(index,1);
+                }
+            },
+            mounted() {
+
+            }
+        }).mount("#app");
+    </script>
+</body>
+<style>
+    * {
+        line-height: 2;
+        /* box-sizing: border-box; */
+        font-family: BrownMedium;
+        }
+
+    body{
+        background-image: url('./images/bgi.jpg');
+        /* background-size:cover; */
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+    .title{
+        width: 90%;
+        inset: 0;
+        margin: 50px auto;
+        padding: 50px;
+        border-bottom: 10px solid #666;
+        /* box-shadow: #555 0 0 5px ; */
+    }
+
+    .title h1{
+        width: 200px;
+        inset: 0;
+        margin: auto;
+        background-color: #333;
+        box-shadow: #555 0px 5px 20px;
+        color: #eee;
+        font-size: 40px;
+        text-align: center;
+    }
+    .wrap{
+        display: flex;
+        justify-content: center;
+    }
+    .cart{
+        width: 90%;
+        inset: 0;
+        margin: auto;
+    }
+
+    .grid {
+        width: 100%;
+        inset: 0;
+        margin: auto;
+        display: flex;
+        flex-wrap: wrap;
+    }
+    .grid >*{
+        /* background-color: #fff; */
+        margin: .5em ;
+        width: calc(16.666666% - 2em);
+    }
+    .card {
+        padding: 3em 0;
+        border: 1px solid black;
+        text-align: center;
+    }
+
+    .card > * {
+        font-size: 12px;
+    }
+
+    .card .pic{
+        width: 70%;
+        height: 100%;
+        inset: 0;
+        margin: 1em auto;
+        /* height: 150px; */
+        background-color: rgb(120, 85, 150);
+        border: #000 3px solid;
+    }
+
+    .card .pic img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .card .merName{
+        font-size: 12px;
+    }
+    .card button{
+        text-align: center;
+        width: 25px;
+        font-size: 16px;
+        background-color: #bbb;
+        border: 1px solid #555;
+    }
+    .card .remove{
+        width: 100px;
+        font-size: 13px;
+        background-color: #eee;
+        border: 1px dashed ;
+    }    
+    .overAll {
+        width: 80%;
+        border: #333 3px solid;
+        inset: 0;
+        margin: 3em auto;
+        /* right: 10em; */
+        /* margin-right: auto ; */
+        padding: 3em 0;
+    }
+    .overAll>*{
+        width: 90%;
+        inset: 0;
+        margin: auto;
+        font-size: 16px;
+    }
+    .overAll .calc{
+        text-align: end;
+    }
+    .overAll .index{
+        width: 20px;
+        font-size: 21px;
+        margin: 0 0 0 1em;
+    }
+    .listOfp{
+        font-weight: 600;
+    }
+    .listOfp .card{
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        width: 100%;
+        font-size: 16px;
+        border: transparent;
+        border-bottom:1px dashed #333 ;
+        margin:  0;
+        padding: 1em 0;
+
+    }
+    .listOfp .card .pic{
+        margin: 0;
+        width: 100px;
+        background-color: #ccc;
+        border: transparent;
+    }
+    .listOfp .card .title{
+        width: 30%;
+        height: 30%;
+        margin: 0;
+        padding: 0;
+        text-align: left;
+        background-color: transparent;
+        border: transparent;
+        font-size: 13px;
+    }
+    
+    .listOfp .card .pic img {
+        width: 100%;
+        object-fit: cover;
+
+    }
+    .merName{
+        font-size: 18px;
+        font-weight: 600;
+    }
+    .seperate_line{
+        width: 90%;
+        inset: 0;
+        /* margin: 1em auto; */
+        padding: 1em;
+        border-top: #333 2px solid;
+    }
+
+    .count * {
+        margin: 10px;
+    }
+
+    .countBox {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+        text-align: center;
+    }
+
+</style>
+</html>
