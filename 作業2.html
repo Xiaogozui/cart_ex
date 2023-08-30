@@ -14,12 +14,11 @@
             <div class="cart">
                 <div class="grid">
                     <div v-for="(prod, index) in products" :key="prod.id">
-                        <div v-if="prod.inCart" class="card">
+                        <div class="card">
                             <div class="pic"><img :src="prod.pic" alt=""></div>
                             <div class="merName">{{prod.title}}</div>
                             <div class="count">
                                 <div>${{prod.price}}/per</div>
-                                
                                 <button @click="decreaseQty(index)">-</button>
                                 <input type="text" v-model="prod.count" class="countBox" readonly="readonly"
                                     @input="minValue(index)" >
