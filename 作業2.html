@@ -10,7 +10,32 @@
         <div class="title">
             <h1>購物車</h1>
         </div>
-        
+        <div class="dec">
+            <div v-for="(pic, index) in patterns" :key="pic.id" class="pattern">
+                <img :src="pic" alt="">
+            </div>
+            <div v-for="(pic, index) in patterns" :key="pic.id" class="pattern">
+                <img :src="pic" alt="">
+            </div>
+            <div v-for="(pic, index) in patterns" :key="pic.id" class="pattern">
+                <img :src="pic" alt="">
+            </div>
+            <div v-for="(pic, index) in patterns" :key="pic.id" class="pattern">
+                <img :src="pic" alt="">
+            </div>
+            <div v-for="(pic, index) in patterns" :key="pic.id" class="pattern">
+                <img :src="pic" alt="">
+            </div>
+            <div v-for="(pic, index) in patterns" :key="pic.id" class="pattern">
+                <img :src="pic" alt="">
+            </div>
+            <div v-for="(pic, index) in patterns" :key="pic.id" class="pattern">
+                <img :src="pic" alt="">
+            </div>
+            <div v-for="(pic, index) in patterns" :key="pic.id" class="pattern">
+                <img :src="pic" alt="">
+            </div>
+        </div>
             <div class="cart">
                 <div class="grid">
                     <div v-for="(prod, index) in products" :key="prod.id">
@@ -20,16 +45,24 @@
                             <div class="count">
                                 <div>${{prod.price}}/per</div>
                                 <button @click="decreaseQty(index)">-</button>
-                                <input type="text" v-model="prod.count" class="countBox" readonly="readonly"
-                                    @input="minValue(index)" >
+                                <div class="qty">{{prod.count}}</div>
                                 <button @click="increaseQty(index)">+</button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+
             <div class="overAll">
-                <!-- <table><th>商品編號</th><th>商品照</th><th>商品名稱</th><th>商品數</th><th>小記</th><th>移除</th></table> -->
+                <div class="card_rowH">
+                    <div class="rh rhIndex">編號</div>
+                    <div class="rh rhPic">商品圖片</div>
+                    <div class="rh rhTitle">商品名稱</div>
+                    <div class="rh rhQty">數量</div>
+                    <div class="rh rhPrice">單價</div>
+                    <div class="rh rhNoteTotal">小記</div>
+                    <div class="rh blank">取消鍵</div>
+                </div>
                 <div class="listOfp" v-for="(prod, index) in products" :key="prod.id">
                     <div class="card">
                         <div class="index">{{index + 1}}</div>
@@ -39,15 +72,14 @@
                         <div class="title">
                             {{prod.title}}
                         </div>
-                        <div>{{prod.count}}</div>
-                        <div>${{prod.price}}/per</div>
-                        <div></div>
-                        <div>小記:${{ prod.count * prod.price }}</div>
+                        <div class="qty">{{prod.count}}</div>
+                        <div class="price">${{prod.price}}</div>
+                        <div class="noteTotal">${{ prod.count * prod.price }}</div>
                         <button class="remove" @click="removeFromCart(index)">REMOVE</button>
                     </div>
                 </div>
                 <div class="seperate_line"></div>
-                <div class="calc">{{ cartItemCount }} 項商品</div>
+                <div class="calc">{{ cartItemCount }} 件商品</div>
                 <div class="calc">總價:${{ cartTotalPrice }}</div>
             </div>
     </div>
@@ -99,19 +131,22 @@
                         inCart: true
                     }
                     ],
-                    qty: 0,
                     patterns: ['./images/cheongsam.png','./images/garment.png','./images/garters.png']
 
                 }
             },
             computed: {
                 cartItemCount() {
-                    return this.products.filter(prod => prod.inCart).length;
+                    // return this.products.filter(prod => prod.inCart).length;
+                    return this.products.reduce((total, prod) => {
+                        total += prod.count
+                        return total
+                    },0)
                 },
                 cartTotalPrice() {
                     return this.products.reduce((total, prod) => {
                         if (prod.inCart) {
-                            return total + prod.count * prod.price;
+                            return total += prod.count * prod.price;
                         }
                         return total;
                     }, 0);
@@ -159,20 +194,31 @@
         width: 90%;
         inset: 0;
         margin: 50px auto;
-        padding: 50px;
+        padding: 10px 0 100px;
         border-bottom: 10px solid #666;
         /* box-shadow: #555 0 0 5px ; */
     }
 
     .title h1{
-        width: 200px;
+        width: 160px;
         inset: 0;
         margin: auto;
-        background-color: #333;
-        box-shadow: #555 0px 5px 20px;
-        color: #eee;
+        /* background-color: #333; */
+        border: #333 5px solid;
+        /* box-shadow: #555 0px 5px 20px; */
+        color: #333;
         font-size: 40px;
         text-align: center;
+        position: relative;
+    }
+    .title h1::after{
+        content: '';
+        width: 85%;
+        height: 80%;
+        top: 5%;
+        left: 5%;
+        border: #333 5px dashed;
+        position: absolute;
     }
     .wrap{
         display: flex;
@@ -194,7 +240,27 @@
     .grid >*{
         /* background-color: #fff; */
         margin: .5em ;
-        width: calc(16.666666% - 2em);
+        width: calc(16.666666% - 1em);
+    }
+    .dec{
+        width:100%;
+        height: 80px;
+        inset: 0;
+        margin: auto;
+        display: flex;
+        justify-content: space-between;
+        position: absolute;
+        overflow: hidden;
+        top: -120px;
+    }
+    .pattern{
+        width: 1.5%;
+        margin: 0;
+    }
+    .pattern img{
+        width: 25px;
+        object-fit: cover;
+
     }
     .card {
         padding: 3em 0;
@@ -231,20 +297,26 @@
         background-color: #bbb;
         border: 1px solid #555;
     }
+    .card .qty{
+        display: inline-block;
+        width: 20px;
+    }
     .card .remove{
-        width: 100px;
-        font-size: 13px;
+        width: 70px;
+        font-size: 12px;
         background-color: #eee;
         border: 1px dashed ;
+        color: #666;
     }    
     .overAll {
-        width: 80%;
+        width: calc(90% - 1em);
         border: #333 3px solid;
         inset: 0;
         margin: 3em auto;
         /* right: 10em; */
         /* margin-right: auto ; */
         padding: 3em 0;
+        padding-top: 0;
     }
     .overAll>*{
         width: 90%;
@@ -252,13 +324,43 @@
         margin: auto;
         font-size: 16px;
     }
+    .card_rowH{
+        width: (90% - 1em);
+        /* height: 30px; */
+        display: flex;
+        justify-content: space-around;
+        /* background-color: #999; */
+        border-bottom: #333 2px solid;
+    }
+    .card_rowH .rh{
+        font-size: 12px;
+        font-weight: 800;
+        text-align: center;
+        padding: 1.5em 0;
+        line-height: 12px;
+    }
+    .rhIndex{
+        width: 5%;
+    }
+    .rhPic{
+        width: 100px;
+    }
+    .rhTitle{
+        width: 15%;
+    }
+    .rhQty{
+        width: 5%;
+    }
+    .blank{
+        width: 70px;
+    }
     .overAll .calc{
         text-align: end;
+        padding: 0;
     }
     .overAll .index{
-        width: 20px;
+        width: 5%;
         font-size: 21px;
-        margin: 0 0 0 1em;
     }
     .listOfp{
         font-weight: 600;
@@ -282,18 +384,20 @@
         border: transparent;
     }
     .listOfp .card .title{
-        width: 30%;
+        width: 15%;
         height: 30%;
         margin: 0;
         padding: 0;
-        text-align: left;
+        text-align: center;
         background-color: transparent;
         border: transparent;
         font-size: 13px;
     }
-    
+    .listOfp .card .qty{
+        width: 5%;
+    }
     .listOfp .card .pic img {
-        width: 100%;
+        height: 100%;
         object-fit: cover;
 
     }
@@ -304,7 +408,8 @@
     .seperate_line{
         width: 90%;
         inset: 0;
-        /* margin: 1em auto; */
+        box-sizing: border-box;
+        margin:  auto;
         padding: 1em;
         border-top: #333 2px solid;
     }
